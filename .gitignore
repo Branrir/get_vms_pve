@@ -1,0 +1,9 @@
+#editors
+.vscode/
+.idea/
+
+# config
+settings.ini
+
+# json output
+vms.json
