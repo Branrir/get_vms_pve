@@ -6,7 +6,6 @@ import json
 import urllib3
 import inquirer
 import re
-from pandas.io.json import json_normalize
 from tabulate import tabulate
 import argparse
 import configparser
@@ -78,6 +77,7 @@ for config in config_data:
                 vms['nodes'][node_name]['vms'][vm_name]['vm_name'] = vm_name
                 vms['nodes'][node_name]['vms'][vm_name]['vm_ips'] = {}
                 vms['nodes'][node_name]['vms'][vm_name]['vm_ips'] = vm_ip
+                vms['nodes'][node_name]['vms'][vm_name]['vm_node'] = node_name
                 print ("Adding:" + node_name, vm_id, vm_name, vm_ip)
                 
     except EnvironmentError as e:
