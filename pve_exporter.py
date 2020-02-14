@@ -51,7 +51,7 @@ for config in config_data:
             vms['nodes'][node_name] = {}
             vms['nodes'][node_name]['vms'] = {}
             node_vms = api.nodes(node_name).get('qemu')
-            #print (node_name)
+            print ('Node ----->' + node_name)
             for vm in node_vms:
                 vm_id = vm.get('vmid')
                 vm_name = vm.get('name')
@@ -82,7 +82,8 @@ for config in config_data:
     except EnvironmentError as e:
         print (e)
 
-#print (vms)
+if args['verbose']:
+    print ('JSON Output: \n' + str(vms))
 
 
 json_vms = json.dumps(vms)
