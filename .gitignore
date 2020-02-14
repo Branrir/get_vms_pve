@@ -3,7 +3,7 @@
 .idea/
 
 # config
-settings.ini
+config.ini
 
 # json output
 vms.json
