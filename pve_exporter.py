@@ -6,6 +6,7 @@ import json
 import urllib3
 import inquirer
 import re
+from pandas.io.json import json_normalize
 from tabulate import tabulate
 import argparse
 import configparser
@@ -22,6 +23,7 @@ s.verify = False
 # argparser
 parser = argparse.ArgumentParser(description='Creates yaml file for Wiki import')
 parser.add_argument('-v', '--verbose', help='debugging mode', action='store_true')
+parser.add_argument('-p', '--print', help='print all ')
 args = vars(parser.parse_args())
 
 # read config.ini
@@ -42,12 +44,15 @@ if args['verbose']:
     print (config_data)
 
 # populate vms pool
-vms = []
+vms = {}
+vms['nodes'] = {}
 for config in config_data:
     try:
         api = ProxmoxAPI(config.get('ip'), user = config.get('user'), password = config.get('pwd'), verify_ssl = False)
         for node in api.nodes.get():
             node_name = node.get('node')
+            vms['nodes'][node_name] = {}
+            vms['nodes'][node_name]['vms'] = {}
             node_vms = api.nodes(node_name).get('qemu')
             #print (node_name)
             for vm in node_vms:
@@ -68,14 +73,20 @@ for config in config_data:
                                 vm_ip.append(ip_address)
                 except:
                     vm_ip = 'qemu agent not installed'
-                               
+                vms['nodes'][node_name]['vms'][vm_name] = {}
+                vms['nodes'][node_name]['vms'][vm_name]['vm_id'] = vm_id
+                vms['nodes'][node_name]['vms'][vm_name]['vm_name'] = vm_name
+                vms['nodes'][node_name]['vms'][vm_name]['vm_ips'] = {}
+                vms['nodes'][node_name]['vms'][vm_name]['vm_ips'] = vm_ip
                 print ("Adding:" + node_name, vm_id, vm_name, vm_ip)
-                vms.append({node_name, vm_id, vm_name,})
+                
     except EnvironmentError as e:
         print (e)
 
-print (vms)
-#json_vms = json.dumps(vms)
-#with open('vms.json', 'w') as f:
-#    json.dump(json_vms, f)
+#print (vms)
+
+
+json_vms = json.dumps(vms)
+with open('vms.json', 'w') as f:
+    json.dump(vms, f)
 
