@@ -6,10 +6,8 @@ import json
 import urllib3
 import inquirer
 import re
-from tabulate import tabulate
 import argparse
 import configparser
-import getpass
 import requests
 from proxmoxer import ProxmoxAPI
 
@@ -67,8 +65,9 @@ for config in config_data:
                         #print (vm_ips)
                         for ip in vm_ips:
                             ip_address = ip.get('ip-address')
+                            ip_type = ip.get('ip-address-type')
                             #print (ip_address)
-                            if ip_address != '127.0.0.1' and ip_address != '::1' and not None:
+                            if ip_address != '127.0.0.1' and ip_address != '::1' and not None and ip_type == 'ipv4':
                                 vm_ip.append(ip_address)
                 except:
                     vm_ip = 'qemu agent not installed'
