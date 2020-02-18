@@ -4,7 +4,7 @@ import os
 import sys
 import json
 import urllib3
-import inquirer
+#import inquirer
 import re
 import argparse
 import configparser
@@ -55,6 +55,7 @@ for config in config_data:
             for vm in node_vms:
                 vm_id = vm.get('vmid')
                 vm_name = vm.get('name')
+                vm_status = vm.get('status')
                 vm_ip = []
                 try:
                     vm_agent = api.nodes(node_name).qemu(vm_id).agent()
@@ -70,7 +71,10 @@ for config in config_data:
                             if ip_address != '127.0.0.1' and ip_address != '::1' and not None and ip_type == 'ipv4':
                                 vm_ip.append(ip_address)
                 except:
-                    vm_ip = 'qemu agent not installed'
+                    if vm_status == "stopped":
+                        vm_ip = 'stopped'
+                    else:
+                        vm_ip = 'qemu agent not installed'
                 vms['nodes'][node_name]['vms'][vm_name] = {}
                 vms['nodes'][node_name]['vms'][vm_name]['vm_id'] = vm_id
                 vms['nodes'][node_name]['vms'][vm_name]['vm_name'] = vm_name
